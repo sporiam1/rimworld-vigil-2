@@ -2,7 +2,14 @@
 
 A RimWorld 1.6 mod about a sentient archotech sword that judges who may carry it, and the one girl in the world born with the Lumen.
 
-> **Status: alpha v0.8. The C# has never been compiled.** Build it before enabling, and use a throwaway save.
+> **Status: alpha v0.8. It compiles but hasn't been playtested yet.** Use a throwaway save.
+
+## Play it
+
+1. Download **VIGIL_ForgottenBond.zip** from the [dev-build release](https://github.com/sporiam1/rimworld-vigil-2/releases/tag/dev-build). It's rebuilt automatically on every update.
+2. Unzip it into `RimWorld/Mods`, so you end up with `Mods/VIGIL_ForgottenBond/About/About.xml`. Delete any older VIGIL folder first.
+3. Enable in this order: Harmony → Royalty → Biotech → Vanilla Expanded Framework → Vanilla Psycasts Expanded → VIGIL.
+4. Turn on Dev Mode and follow `Docs/DEV_TESTS.md` (in this repo).
 
 ## What's in it
 
@@ -18,7 +25,11 @@ Not built yet: the Silent Vault site, the story questline, sword visual states, 
 
 RimWorld 1.6 · Royalty · Biotech · Harmony · Vanilla Expanded Framework · Vanilla Psycasts Expanded
 
-## Building (Windows)
+## Building it yourself (optional)
+
+You only need this to change the code. Every push to `main` is compiled by GitHub Actions (`.github/workflows/build.yml`).
+
+### Windows
 
 1. Install the [.NET SDK](https://dotnet.microsoft.com/download).
 2. Subscribe to VEF and VPE on Steam.

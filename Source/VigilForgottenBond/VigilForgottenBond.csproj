@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <!-- net48: VPE's DLL is built against 4.8. -->
+    <TargetFramework>net48</TargetFramework>
     <LangVersion>latest</LangVersion>
     <AssemblyName>VigilForgottenBond</AssemblyName>
     <RootNamespace>VigilForgottenBond</RootNamespace>

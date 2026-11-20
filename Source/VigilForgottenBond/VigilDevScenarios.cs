@@ -87,28 +87,24 @@ namespace VigilForgottenBond
         }
     }
 
-    public sealed class QuestPart_VigilDebug : QuestPart
+    // QuestPartActivable (not QuestPart) is what exposes QuestPartTick in 1.6. With no
+    // inSignalEnable it enables as soon as the quest is added; it then waits until the
+    // player accepts the quest (state Ongoing) before running the test action once.
+    public sealed class QuestPart_VigilDebug : QuestPartActivable
     {
         public string scenario;
-        private bool queued;
         private bool finished;
 
         public override void ExposeData()
         {
             base.ExposeData();
             Scribe_Values.Look(ref scenario, "vigilScenario");
-            Scribe_Values.Look(ref queued, "vigilQueued");
             Scribe_Values.Look(ref finished, "vigilFinished");
-        }
-        public override void Notify_QuestAccepted()
-        {
-            base.Notify_QuestAccepted();
-            queued = true;
         }
         public override void QuestPartTick()
         {
             base.QuestPartTick();
-            if (finished || !queued) return;
+            if (finished || quest.State != QuestState.Ongoing) return;
             finished = true;
             VigilDevScenarios.RunAndNotify(scenario);
             // This test quest intentionally does not grant rewards.

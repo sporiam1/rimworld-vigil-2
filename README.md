@@ -1,33 +1,54 @@
-# ALPHA v0.7 IMPORTANT
+# VIGIL — The Forgotten Bond
 
-**The game-mechanic DLL is not included. This is source for local compilation; see Tools/Build-Windows.ps1.**
+A RimWorld 1.6 mod about a sentient archotech sword that judges who may carry it, and the one girl in the world born with the Lumen.
 
-New: three Luminist ability classes block unrecognized casters at casting time. Five debug `QuestScriptDef`s appear under Generate quest after compilation, plus VIGIL: Tests debug actions. See `Docs/DEV_TESTS.md`.
+> **Status: alpha v0.8. The C# has never been compiled.** Build it before enabling, and use a throwaway save.
 
-# VIGIL: The Forgotten Bond — Alpha v0.6 source
+## What's in it
 
-**Source prototype only. There is NO compiled DLL in this archive.** The original sword sprites and VPE concept assets are preserved. The separate Weapon Preview ZIP can be installed to inspect the sword art; it does *not* enable any story mechanics.
+- **VIGIL**, a unique sword: only one male colonist can carry it, chosen through the **Three Witnesses** trial (Guardian, Executioner, Arbiter). It has its own **Accord** (trust) and **Resonance** (combat) meters. When its bearer dies, it goes dormant, remembers him, and can be petitioned again.
+- **The Luminant**: only one living at a time in the whole world. A newborn girl inherits the mantle, it passes on one in-game year after her death, and she shows a visible trait and health condition.
+- **The Luminist path**: an exclusive Vanilla Psycasts Expanded tree that only the living Luminant can unlock or cast. Three tier-I powers are defined so far; 15 are planned (see `Docs/PSYCAST_TREE.md`).
+- **The Forgotten Bond**: the knight's guardianship oath.
+- **Dev tools**: five `[TEST]` quests and a *VIGIL: Tests* debug menu (see `Docs/DEV_TESTS.md`).
 
-## What's new compared with v0.5
+Not built yet: the Silent Vault site, the story questline, sword visual states, the remaining 12 psycasts.
 
-- The **Three Witnesses** now requires actual combat events before an Arbiter oath can create a male VIGIL bearer. A developer shortcut is available on the sword only while Dev Mode is active.
-- Birth-based Luminant assignment now has a direct spawn hook, plus a conservative fallback scanner for modded births; the world-level registry still guarantees only one currently designated female mantle bearer.
-- Candidate progress, relationship state, Luminant references, and the succession cooldown are saved.
-- VPE integration still proposes granting the first Luminist ability at age seven.
+## Requirements
 
-## What is NOT done
+RimWorld 1.6 · Royalty · Biotech · Harmony · Vanilla Expanded Framework · Vanilla Psycasts Expanded
 
-No compiled assembly, verified in-game UI, fully tested Luminist psycast, complete questline, VIGIL visual state switching, or separate Horax faction is included. See Docs/ALPHA_V06_CHANGELOG.md.
+## Building (Windows)
 
-## Building on Windows
+1. Install the [.NET SDK](https://dotnet.microsoft.com/download).
+2. Subscribe to VEF and VPE on Steam.
+3. **Recommended:** clone this repo straight into your RimWorld `Mods` folder, so each build lands where the game loads it:
+   ```
+   cd "C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods"
+   git clone https://github.com/sporiam1/rimworld-vigil-2
+   ```
+4. From the repo folder, in PowerShell:
+   ```
+   ./Tools/Build-Windows.ps1
+   ```
+   Pass `-ModsDir "D:\...\workshop\content\294100"` if Steam isn't in the default place.
+   RimWorld and Harmony references come from NuGet. The script finds the VEF/VPE DLLs in your Workshop folder.
+5. Enable the mods in this order: Harmony → Royalty → Biotech → VEF → VPE → VIGIL. Start a new save with Dev Mode on.
 
-1. Install RimWorld **1.6**, Royalty and Biotech, plus Harmony, Vanilla Expanded Framework, and Vanilla Psycasts Expanded.
-2. Install Visual Studio Build Tools with **.NET Framework 4.7.2 Developer Pack** and C# support, or compatible `dotnet` build tools with reference assemblies.
-3. Start PowerShell in this folder, then run `./Tools/Build-Windows.ps1 -RimWorldDir 'C:\Program Files (x86)\Steam\steamapps\common\RimWorld' -ModsDir 'C:\Program Files (x86)\Steam\steamapps\workshop\content\294100'`. Update the paths for your installation.
-4. If dependency discovery fails, set env vars `RIMWORLD_MANAGED`, `HARMONY_DLL`, `VEF_DLL`, and `VPE_DLL` manually then run `dotnet build Source/VigilForgottenBond/VigilForgottenBond.csproj -c Release`.
-5. Copy this folder **after compilation** to RimWorld's Mods folder; don't enable both source mod and separate Weapon Preview at once.
-6. Open a **new test save** with the dependencies. See Docs/ALPHA_V06_CHANGELOG.md for Three Witnesses testing.
+Before committing, run `python Tools/VerifyFiles.py` for static checks: XML, textures, class references, DefOf names and brace balance. It does not compile anything.
 
-## Static verification
+## Layout
 
-Run `python Tools/VerifyFiles.py` to check XML parsing, duplicate DefNames, texture paths, presence of an uncompiled DLL placeholder, and rough source invariants. This cannot replace actual compile or game testing.
+```
+About/        mod metadata
+Defs/         XML: sword, Luminant trait/hediffs, Luminist path + psycasts, test quests
+Source/       C# project → builds to Assemblies/ (git-ignored)
+Textures/     sword sprites, psycast icons, path backgrounds
+Docs/         story bible, psycast tree, questline, art direction, dev tests
+Docs/History/ original ChatGPT planning log and v0.6–v0.7 changelogs
+Tools/        build/install scripts, static verifier
+```
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md).

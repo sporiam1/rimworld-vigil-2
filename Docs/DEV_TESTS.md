@@ -1,4 +1,4 @@
-# VIGIL alpha v0.7 — Development quest tests
+# VIGIL alpha v0.8 — Development quest tests
 
 This build adds **development launchers**, not the full Silent Vault or Anomaly story campaign.
 The test quests exist to speed up repeatable manual testing of core mechanics.
@@ -31,9 +31,19 @@ Under **Debug actions > VIGIL: Tests**, find the same launchers, plus:
 2. Run `The Three Witnesses [TEST]`, click sword > Arbiter's Judgment > choose a verdict.
 3. Select a female colonist at least age 7 with `Assign Luminant to existing female pawn`.
 4. Run `The First Light [TEST]`; open the pawn's Psycasts tab and check `luminist`.
-5. Draft a DIFFERENT pawn and try to give it `Luminous Ward` by dev mode: its cast action must remain disabled even if the ability is present.
+5. **The v0.6 playtest bug.** Pick a DIFFERENT psycaster and open her Psycasts tab with Dev Mode ON.
+   VPE's dev mode lets you press Unlock on any path, so press it on `luminist`. Expected in v0.8:
+   * the path is moved aside again as soon as her health changes (VPE's `ensureLockRequirement`), and
+   * any Luminist power she was given shows greyed out with "Locked: only the living Luminant…", and won't cast.
+   * With Dev Mode OFF, the Unlock button should not appear at all for her.
+   * Dev Mode on: the log shows `[VIGIL] Blocked Luminist ability …` when something tries to grant one.
 6. Equip the bonded male with the sword, run `The Forgotten Bond [TEST]`.
 7. Save, reload and repeat test (5), verifying trait, mantle and oath state survive.
+8. **Dead bearer (fixed in v0.8).** Kill the bonded male (dev: Kill). Strip the sword from his corpse.
+   Expected: a "VIGIL Remembers" letter; the sword's inspect panel says Dormant and lists him under
+   "Remembers"; `Petition VIGIL` is available again for another male colonist.
+9. Check the log on startup for `[VIGIL] Forgotten Bond alpha v0.8 loaded: N patches applied`.
+   Any `Patch … failed` line names exactly which hook doesn't match your game version.
 
 ## What is NOT implemented
 
@@ -50,6 +60,7 @@ The XML quest roots reference C# classes; without the compiled DLL they cannot i
 
 ## Testing limits
 
-No full game compile or runtime test was possible in the authoring environment: the exact
-RimWorld 1.6 / VPE / VEF installed assemblies were not available. Consult `Player.log` and
+No compile or runtime test was possible in the authoring environment. v0.8's VEF/VPE calls were
+checked by hand against the public VEF and VPE source on GitHub (VPE's 1.6 DLL contains the same
+lock fields), but that is not the same as compiling. Consult `Player.log` and
 supply compiler errors if any C# API signature differs from your installed builds.

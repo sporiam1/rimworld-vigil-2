@@ -25,24 +25,26 @@ namespace VigilForgottenBond
     [HarmonyPatch(typeof(Pawn_HealthTracker), "PreApplyDamage")]
     internal static class Patch_GradualAwakening
     {
-        private static readonly FieldInfo PawnField = AccessTools.Field(typeof(Pawn_HealthTracker), "pawn");
+        private static readonly AccessTools.FieldRef<Pawn_HealthTracker, Pawn> PawnRef =
+            AccessTools.FieldRefAccess<Pawn_HealthTracker, Pawn>("pawn");
+
         public static void Prefix(Pawn_HealthTracker __instance, ref DamageInfo dinfo)
         {
-            var victim = PawnField?.GetValue(__instance) as Pawn;
+            Pawn victim = PawnRef(__instance);
             if (victim == null || dinfo.Amount <= 0) return;
             Pawn attacker = dinfo.Instigator as Pawn;
-            // Small scan: only ground swords at the victim's location (during an active trial).
-            if (victim.Spawned && victim.Map != null) {
-                var vigil = DefDatabase<ThingDef>.GetNamedSilentFail("VGL_VigilSword");
-                if (vigil != null)
-                    foreach (Thing sword in victim.Map.listerThings.ThingsOfDef(vigil))
-                        sword.TryGetComp<CompVigilPersona>()?.RecordWitness(victim, attacker, dinfo.Amount);
-            }
+
+            // Trial witnesses: only unbonded swords lying on the victim's map.
+            if (victim.Spawned && victim.Map != null)
+                foreach (Thing sword in victim.Map.listerThings.ThingsOfDef(VGL_DefOf.VGL_VigilSword))
+                    sword.TryGetComp<CompVigilPersona>()?.RecordWitness(victim, attacker, dinfo.Amount);
+
             var equipped = victim.equipment?.Primary?.GetComp<CompVigilPersona>();
             if (equipped != null && equipped.CanWield(victim)) equipped.GainResonance(dinfo.Amount * 0.5f);
-            var ward = DefDatabase<HediffDef>.GetNamedSilentFail("VGL_LuminousWard");
-            if (ward != null && victim.health?.hediffSet?.HasHediff(ward) == true)
+
+            if (victim.health?.hediffSet?.HasHediff(VGL_DefOf.VGL_LuminousWard) == true)
                 dinfo.SetAmount(dinfo.Amount * 0.82f);
+
             if (dinfo.Amount < 8f || LumenWorldComponent.Instance?.TryChildShield(victim) != true) return;
             dinfo.SetAmount(dinfo.Amount * 0.6f);
             if (victim.Spawned) MoteMaker.ThrowText(victim.DrawPos, victim.Map, "Lumen ward", 2f);
@@ -63,16 +65,20 @@ namespace VigilForgottenBond
             if (comp != null && !comp.CanWield(pawn)) __result = false;
         }
     }
+
     [HarmonyPatch(typeof(Pawn_EquipmentTracker), "AddEquipment")]
     internal static class Patch_AddEquipment
     {
-        private static readonly FieldInfo PawnField = AccessTools.Field(typeof(Pawn_EquipmentTracker), "pawn");
+        private static readonly AccessTools.FieldRef<Pawn_EquipmentTracker, Pawn> PawnRef =
+            AccessTools.FieldRefAccess<Pawn_EquipmentTracker, Pawn>("pawn");
+
         public static bool Prefix(Pawn_EquipmentTracker __instance, ThingWithComps newEq)
         {
             var comp = newEq?.GetComp<CompVigilPersona>();
-            return comp == null || comp.CanWield(PawnField?.GetValue(__instance) as Pawn);
+            return comp == null || comp.CanWield(PawnRef(__instance));
         }
     }
+
     [HarmonyPatch(typeof(Pawn), nameof(Pawn.GetGizmos))]
     internal static class Patch_BearerGizmos
     {
@@ -91,33 +97,22 @@ namespace VigilForgottenBond
             };
         }
     }
-    [HarmonyPatch]
-    internal static class Patch_LuministUnlock
-    {
-        public static IEnumerable<MethodBase> TargetMethods() =>
-            AccessTools.GetDeclaredMethods(typeof(VanillaPsycastsExpanded.PsycasterPathDef))
-                .Where(m => m.Name == "CanPawnUnlock" && m.ReturnType == typeof(bool));
-        public static void Postfix(VanillaPsycastsExpanded.PsycasterPathDef __instance,
-            object[] __args, ref bool __result)
-        {
-            if (__instance.defName != "VGL_Luminist") return;
-            Pawn pawn = __args.OfType<Pawn>().FirstOrDefault();
-            __result = __result && LuminantAbilityGate.CanCast(pawn);
-        }
-    }
-    [HarmonyPatch]
+
+    // Belt-and-braces: refuse to hand ANY Luminist ability (all 15 + Dawnbringer, not
+    // just the three tier-I powers) to a pawn who is not the living Luminant, whether
+    // the grant comes from VPE, a neurotrainer, another mod, or a debug tool.
+    // Path unlocking and cast-time checks are handled by LuministPathDef.
+    [HarmonyPatch(typeof(CompAbilities), nameof(CompAbilities.GiveAbility))]
     internal static class Patch_LuministAbilityGrant
     {
-        public static IEnumerable<MethodBase> TargetMethods() =>
-            AccessTools.GetDeclaredMethods(typeof(CompAbilities))
-                .Where(m => m.Name == "GiveAbility" && m.GetParameters().Length > 0 &&
-                            m.GetParameters()[0].ParameterType == typeof(VEF.Abilities.AbilityDef));
-        public static bool Prefix(CompAbilities __instance, VEF.Abilities.AbilityDef __0)
+        public static bool Prefix(CompAbilities __instance, VEF.Abilities.AbilityDef abilityDef)
         {
-            if (__0?.defName == null || !__0.defName.StartsWith("VGL_")) return true;
-            if (__0.defName != "VGL_LuminousWardCast" && __0.defName != "VGL_SecondSightCast" &&
-                __0.defName != "VGL_RadiantSparkCast") return true;
-            return LuminantAbilityGate.CanCast(__instance.parent as Pawn);
+            if (!LuministPathDef.IsLuministAbility(abilityDef)) return true;
+            if (LuminantAbilityGate.CanCast(__instance.parent as Pawn)) return true;
+            if (Prefs.DevMode)
+                Log.Message("[VIGIL] Blocked Luminist ability " + abilityDef.defName + " for " +
+                    (__instance.parent?.LabelShort ?? "null") + ": not the living Luminant.");
+            return false;
         }
     }
 }

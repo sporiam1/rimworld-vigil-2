@@ -10,7 +10,8 @@ namespace VigilForgottenBond
     public sealed class LumenWorldComponent : WorldComponent
     {
         private Pawn currentLuminant;
-        private List<Pawn> predecessors = new List<Pawn>();
+        // Names, not Pawn references, so a cleaned-up dead pawn can't break loading.
+        private List<string> predecessors = new List<string>();
         private List<Pawn> observedInfants = new List<Pawn>();
         private bool awaitingSuccession;
         private int successionEligibleTick;
@@ -31,7 +32,7 @@ namespace VigilForgottenBond
         {
             base.ExposeData();
             Scribe_References.Look(ref currentLuminant, "lumenHolder");
-            Scribe_Collections.Look(ref predecessors, "lumenPredecessors", LookMode.Reference);
+            Scribe_Collections.Look(ref predecessors, "lumenPredecessorNames", LookMode.Value);
             Scribe_Collections.Look(ref observedInfants, "lumenObservedInfants", LookMode.Reference);
             Scribe_Values.Look(ref awaitingSuccession, "lumenAwaitingSuccessor");
             Scribe_Values.Look(ref successionEligibleTick, "lumenEligibleAtTick");
@@ -41,7 +42,7 @@ namespace VigilForgottenBond
             Scribe_Values.Look(ref initialized, "lumenInitialized");
             Scribe_Values.Look(ref initializedTick, "lumenInitializedTick");
             if (Scribe.mode == LoadSaveMode.PostLoadInit) {
-                if (predecessors == null) predecessors = new List<Pawn>();
+                if (predecessors == null) predecessors = new List<string>();
                 if (observedInfants == null) observedInfants = new List<Pawn>();
             }
         }
@@ -102,7 +103,7 @@ namespace VigilForgottenBond
             }
             if (awaitingSuccession && Find.TickManager.TicksGame < successionEligibleTick) return false;
             if (currentLuminant != null) {
-                if (!predecessors.Contains(currentLuminant)) predecessors.Add(currentLuminant);
+                RememberPredecessor(currentLuminant);
                 RemoveMantleAppearance(currentLuminant);
             }
             currentLuminant = baby;
@@ -129,7 +130,7 @@ namespace VigilForgottenBond
                 return false;
             if (currentLuminant != null && currentLuminant != pawn)
             {
-                if (!predecessors.Contains(currentLuminant)) predecessors.Add(currentLuminant);
+                RememberPredecessor(currentLuminant);
                 RemoveMantleAppearance(currentLuminant);
             }
             currentLuminant = pawn;
@@ -166,8 +167,7 @@ namespace VigilForgottenBond
         public bool DevSpawnRelic(Map map)
         {
             if (!Prefs.DevMode || map == null || !map.IsPlayerHome) return false;
-            ThingDef def = DefDatabase<ThingDef>.GetNamedSilentFail("VGL_VigilSword");
-            if (def == null) return false;
+            ThingDef def = VGL_DefOf.VGL_VigilSword;
             // One authentic copy: do not debug-duplicate a spawned weapon.
             foreach (Map m in Find.Maps)
                 if (m.listerThings.ThingsOfDef(def).Count > 0) return false;
@@ -182,10 +182,18 @@ namespace VigilForgottenBond
             return true;
         }
 
+        public IReadOnlyList<string> Predecessors => predecessors;
+
+        private void RememberPredecessor(Pawn p)
+        {
+            string name = p?.Name?.ToStringFull ?? p?.LabelShort;
+            if (!name.NullOrEmpty() && !predecessors.Contains(name)) predecessors.Add(name);
+        }
+
         private void StartSuccession(int now)
         {
             awaitingSuccession = true;
-            successionEligibleTick = now + 3600000; // 60 in-game days
+            successionEligibleTick = now + GenDate.TicksPerYear; // one RimWorld year (60 days)
             Find.LetterStack.ReceiveLetter("The Light Has Fallen",
                 "The Luminant has died. After one RimWorld year, the next eligible newborn girl " +
                 "may inherit the mantle. Resurrection before transfer restores the original bearer.",
@@ -212,11 +220,11 @@ namespace VigilForgottenBond
         private static void EnsureMantleAppearance(Pawn pawn)
         {
             if (pawn == null || pawn.Dead) return;
-            TraitDef trait = DefDatabase<TraitDef>.GetNamedSilentFail("VGL_LuminantTrait");
-            if (trait != null && pawn.story?.traits != null && !pawn.story.traits.HasTrait(trait))
+            TraitDef trait = VGL_DefOf.VGL_LuminantTrait;
+            if (pawn.story?.traits != null && !pawn.story.traits.HasTrait(trait))
                 pawn.story.traits.GainTrait(new Trait(trait, 0));
-            HediffDef def = DefDatabase<HediffDef>.GetNamedSilentFail("VGL_LuminantMantle");
-            if (def == null || pawn.health?.hediffSet == null) return;
+            HediffDef def = VGL_DefOf.VGL_LuminantMantle;
+            if (pawn.health?.hediffSet == null) return;
             var h = pawn.health.hediffSet.GetFirstHediffOfDef(def);
             if (h == null) h = pawn.health.AddHediff(def);
             int age = pawn.ageTracker?.AgeBiologicalYears ?? 0;
@@ -225,11 +233,9 @@ namespace VigilForgottenBond
         private static void RemoveMantleAppearance(Pawn pawn)
         {
             if (pawn == null) return;
-            TraitDef trait = DefDatabase<TraitDef>.GetNamedSilentFail("VGL_LuminantTrait");
-            Trait t = pawn.story?.traits?.allTraits?.FirstOrDefault(x => x.def == trait);
+            Trait t = pawn.story?.traits?.allTraits?.FirstOrDefault(x => x.def == VGL_DefOf.VGL_LuminantTrait);
             if (t != null) pawn.story.traits.RemoveTrait(t);
-            HediffDef def = DefDatabase<HediffDef>.GetNamedSilentFail("VGL_LuminantMantle");
-            Hediff h = pawn.health?.hediffSet?.GetFirstHediffOfDef(def);
+            Hediff h = pawn.health?.hediffSet?.GetFirstHediffOfDef(VGL_DefOf.VGL_LuminantMantle);
             if (h != null) pawn.health.RemoveHediff(h);
         }
         private void TrySpawnRelic(int now)

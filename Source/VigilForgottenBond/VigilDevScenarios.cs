@@ -40,9 +40,8 @@ namespace VigilForgottenBond
         private static Map Home => Find.Maps.FirstOrDefault(m => m.IsPlayerHome);
         private static CompVigilPersona OnMapSword(Map map)
         {
-            var def = DefDatabase<ThingDef>.GetNamedSilentFail("VGL_VigilSword");
-            if (def == null || map == null) return null;
-            return map.listerThings.ThingsOfDef(def).Select(t => t.TryGetComp<CompVigilPersona>())
+            if (map == null) return null;
+            return map.listerThings.ThingsOfDef(VGL_DefOf.VGL_VigilSword).Select(t => t.TryGetComp<CompVigilPersona>())
                 .FirstOrDefault(c => c != null);
         }
         public static bool Execute(string key)

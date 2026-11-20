@@ -11,7 +11,7 @@ namespace VigilForgottenBond
         public CompProperties_VigilPersona() { compClass = typeof(CompVigilPersona); }
     }
 
-    // Alpha 0.6: The Three Witnesses replace the old click-to-bond test.
+    // The Three Witnesses (v0.6). v0.8: a dead bearer releases the sword (see ReleaseLostBearer).
     // Candidates witness a threatened ally and personally strike a hostile target,
     // then decide which principle guides their final oath. All state is saved.
     public sealed class CompVigilPersona : ThingComp
@@ -28,12 +28,50 @@ namespace VigilForgottenBond
         private bool oathSworn;
         private int lastConsultTick = -999999;
         private string verdict = "";
+        // Names, not Pawn references: dead pawns can be cleaned out of the world,
+        // and a dangling reference would just log a load error.
+        private List<string> rememberedBearers = new List<string>();
 
         public Pawn Bearer => bearer;
         public Pawn Candidate => candidate;
         public bool HasGuardianWitness => guardianWitness;
         public bool HasExecutionerWitness => executionerWitness;
-        public bool CanWield(Pawn pawn) => pawn != null && pawn == bearer && !pawn.Dead && pawn.gender == Gender.Male;
+        public IReadOnlyList<string> RememberedBearers => rememberedBearers;
+
+        public bool CanWield(Pawn pawn)
+        {
+            ReleaseLostBearer();
+            return pawn != null && pawn == bearer && !pawn.Dead && pawn.gender == Gender.Male;
+        }
+
+        /// <summary>
+        /// v0.7 bug: a dead bearer stayed in 'bearer' forever, so nobody could ever
+        /// petition or equip VIGIL again. Checked lazily wherever the sword is
+        /// inspected, offered, or equipped. If the bearer is resurrected before anyone
+        /// handles the sword, he simply keeps it, the same rule as the Luminant mantle.
+        /// </summary>
+        private void ReleaseLostBearer()
+        {
+            if (bearer == null || !bearer.Dead) return;
+            Pawn fallen = bearer;
+            string name = fallen.Name?.ToStringFull ?? fallen.LabelShort;
+            if (!rememberedBearers.Contains(name)) rememberedBearers.Add(name);
+            bearer = null;
+            candidate = null;
+            guardianWitness = false;
+            executionerWitness = false;
+            oathSworn = false;
+            verdict = "";
+            awakening = 1;
+            resonance = 0f;
+            accord = 50;
+            Find.LetterStack.ReceiveLetter("VIGIL Remembers",
+                "VIGIL has lost its bearer, " + fallen.LabelShortCap + ". The persona core falls " +
+                "silent, then speaks once: 'I will not forget him.'\n\nThe sword is dormant again. " +
+                "A new male candidate may petition it and face the Three Witnesses.",
+                LetterDefOf.NeutralEvent,
+                parent.SpawnedOrAnyParentSpawned ? new LookTargets(parent) : LookTargets.Invalid);
+        }
         public bool CanOffer(Pawn pawn) => pawn != null && !pawn.Dead && pawn.RaceProps.Humanlike &&
             pawn.gender == Gender.Male && pawn.ageTracker?.AgeBiologicalYears >= 13 && pawn.Faction == Faction.OfPlayer;
 
@@ -52,25 +90,32 @@ namespace VigilForgottenBond
             Scribe_Values.Look(ref oathSworn, "vigilOathSworn", false);
             Scribe_Values.Look(ref lastConsultTick, "vigilLastConsult", -999999);
             Scribe_Values.Look(ref verdict, "vigilVerdict", "");
+            Scribe_Collections.Look(ref rememberedBearers, "vigilRememberedBearers", LookMode.Value);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit && rememberedBearers == null)
+                rememberedBearers = new List<string>();
         }
 
         public override string CompInspectStringExtra()
         {
+            ReleaseLostBearer();
+            string memory = rememberedBearers.Count == 0 ? "" :
+                "\nRemembers: " + string.Join(", ", rememberedBearers);
             if (bearer != null)
                 return "VIGIL — Bearer: " + bearer.LabelShortCap + " | Accord " + accord +
                        "/100 | Resonance " + (int)resonance + "/100 | Stage " + awakening +
-                       (oathSworn ? " | Oathbound" : "") + (verdict == "" ? "" : " | Verdict: " + verdict);
-            if (candidate == null) return "VIGIL — Dormant. A male colonist must petition for the Three Witnesses.";
+                       (oathSworn ? " | Oathbound" : "") + (verdict == "" ? "" : " | Verdict: " + verdict) + memory;
+            if (candidate == null) return "VIGIL — Dormant. A male colonist must petition for the Three Witnesses." + memory;
             return "VIGIL — Candidate: " + candidate.LabelShortCap +
                    " | Guardian " + (guardianWitness ? "witnessed" : "pending") +
                    " | Executioner " + (executionerWitness ? "witnessed" : "pending") +
-                   " | Arbiter " + (guardianWitness && executionerWitness ? "ready" : "locked");
+                   " | Arbiter " + (guardianWitness && executionerWitness ? "ready" : "locked") + memory;
         }
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
             foreach (Gizmo g in base.CompGetGizmosExtra()) yield return g;
             if (!parent.Spawned || parent.Map == null) yield break;
+            ReleaseLostBearer();
             if (bearer != null) yield break;
             yield return new Command_Action {
                 defaultLabel = candidate == null ? "Petition VIGIL" : "Change candidate",
@@ -103,7 +148,9 @@ namespace VigilForgottenBond
         public void RecordWitness(Pawn victim, Pawn instigator, float damage)
         {
             // Only a grounded, unbonded relic can witness trial combat.
-            if (parent == null || !parent.Spawned || candidate == null || bearer != null || damage < 3f) return;
+            if (parent == null || !parent.Spawned || damage < 3f) return;
+            ReleaseLostBearer();
+            if (candidate == null || bearer != null) return;
             if (candidate.Dead || candidate.Map != parent.Map) return;
             bool victimIsFriendly = victim != null && victim != candidate &&
                                     victim.Faction == Faction.OfPlayer && victim.Spawned;
@@ -193,8 +240,7 @@ namespace VigilForgottenBond
                 Messages.Message("Guardian's Ward requires 30 Resonance and one day of recovery.",
                     MessageTypeDefOf.RejectInput, false); return;
             }
-            var def = DefDatabase<HediffDef>.GetNamedSilentFail("VGL_LuminousWard");
-            if (def == null) return;
+            HediffDef def = VGL_DefOf.VGL_LuminousWard;
             int count = 0;
             foreach (Pawn p in bearer.Map.mapPawns.FreeColonistsSpawned)
                 if (p.Position.InHorDistOf(bearer.Position, 4)) {

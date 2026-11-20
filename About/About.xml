@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
-  <name>VIGIL: The Forgotten Bond — v0.7 SOURCE ALPHA (Compile Required)</name>
-  <author>Community design project</author>
+  <name>VIGIL: The Forgotten Bond (alpha)</name>
+  <author>sporiam1</author>
+  <url>https://github.com/sporiam1/rimworld-vigil-2</url>
+  <modVersion>0.8.0</modVersion>
   <packageId>VIGIL.ForgottenBond</packageId>
   <supportedVersions><li>1.6</li></supportedVersions>
-  <description>UNCOMPILED DEVELOPMENT SOURCE. v0.7 milestone: Luminist cast-time restriction, five dev Generate quest entries and one-click test actions. Compile C# before enabling; refer to README. Quests and final visual transformations are incomplete.</description>
+  <description>A sentient archotech sword that judges who may carry it, and the one girl in the world born with the Lumen.
+
+ALPHA v0.8: build the DLL before enabling (see README). Male-only VIGIL bearer chosen through the Three Witnesses; one unique female Luminant with an exclusive Vanilla Psycasts Expanded path. Story quests are not built yet; dev-mode test quests are included.</description>
   <modDependencies>
     <li><packageId>brrainz.harmony</packageId><displayName>Harmony</displayName></li>
     <li><packageId>Ludeon.RimWorld.Royalty</packageId><displayName>Royalty</displayName></li>

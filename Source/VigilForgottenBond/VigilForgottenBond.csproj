@@ -8,13 +8,21 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <DebugType>none</DebugType>
   </PropertyGroup>
-  <!-- Set these variables to the versions installed on your machine. Never distribute game DLLs. -->
+
+  <!-- Game + Harmony come from NuGet, so no game files are needed to build.
+       Krafs.Rimworld.Ref contains reference-only RimWorld/Unity assemblies. -->
   <ItemGroup>
-    <Reference Include="Assembly-CSharp"><HintPath>$(RIMWORLD_MANAGED)/Assembly-CSharp.dll</HintPath><Private>false</Private></Reference>
-    <Reference Include="UnityEngine.CoreModule"><HintPath>$(RIMWORLD_MANAGED)/UnityEngine.CoreModule.dll</HintPath><Private>false</Private></Reference>
-    <Reference Include="0Harmony"><HintPath>$(HARMONY_DLL)</HintPath><Private>false</Private></Reference>
-    <Reference Include="VanillaPsycastsExpanded"><HintPath>$(VPE_DLL)</HintPath><Private>false</Private></Reference>
+    <PackageReference Include="Krafs.Rimworld.Ref" Version="1.6.*" />
+    <PackageReference Include="Lib.Harmony" Version="2.3.6" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- VEF and VPE are not on NuGet: point these at your Workshop copies (Tools/Build-Windows.ps1
+       finds them automatically). Workshop IDs: VEF 2023507013, VPE 2842502659. -->
+  <ItemGroup>
     <Reference Include="VEF"><HintPath>$(VEF_DLL)</HintPath><Private>false</Private></Reference>
+    <Reference Include="VanillaPsycastsExpanded"><HintPath>$(VPE_DLL)</HintPath><Private>false</Private></Reference>
   </ItemGroup>
 </Project>

@@ -13,13 +13,12 @@ namespace VigilForgottenBond
         // Here we grant exactly one first-tier ability at the first awakening.
         public static bool EnsureFirstAbility(Pawn pawn)
         {
-            if (pawn == null || !LumenWorldComponent.Instance.IsLuminant(pawn) ||
-                pawn.ageTracker.AgeBiologicalYears < 7) return false;
+            if (!LuminantAbilityGate.CanCast(pawn)) return false;
 
-            var path = DefDatabase<PsycasterPathDef>.GetNamedSilentFail("VGL_Luminist");
-            var ward = DefDatabase<AbilityDef>.GetNamedSilentFail("VGL_LuminousWardCast");
+            PsycasterPathDef path = VGL_DefOf.VGL_Luminist;
+            AbilityDef ward = VGL_DefOf.VGL_LuminousWardCast;
             var comp = pawn.GetComp<CompAbilities>();
-            if (path == null || ward == null || comp == null || pawn.health == null) return false;
+            if (comp == null || pawn.health == null) return false;
 
             var psylink = pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.PsychicAmplifier) as Hediff_Psylink;
             if (psylink == null)

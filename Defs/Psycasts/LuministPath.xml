@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
-  <!-- VPE integration prototype; path schema should be checked in the exact installed VPE release. -->
-  <VanillaPsycastsExpanded.PsycasterPathDef>
+  <!-- Schema checked against VPE source (PsycasterPathDef / AbilityExtension_Psycast).
+       Class= makes VPE use LuministPathDef, whose CanPawnUnlock admits only the living Luminant. -->
+  <VanillaPsycastsExpanded.PsycasterPathDef Class="VigilForgottenBond.LuministPathDef">
     <defName>VGL_Luminist</defName>
     <label>luminist</label>
     <description>A singular discipline of stabilizing psychic light. Sanctuary, Revelation, and Judgment converge at the final dawn. Only the current Luminant may learn these psycasts.</description>
     <background>UI/Psycasts/PathBG_Luminist</background>
     <altBackground>UI/Psycasts/PathBG_Luminist_Alternate</altBackground>
     <tab>Luminant</tab>
+    <lockedReason>only the living Luminant, after her First Light</lockedReason>
+    <!-- Enforce the lock at cast time too (VPE skips it for neurotrainer paths by default). -->
+    <ignoreLockRestrictionsForNeurotrainers>false</ignoreLockRestrictionsForNeurotrainers>
+    <!-- Re-check whenever her hediffs change: a former Luminant loses the path, and regains it if the mantle returns. -->
+    <ensureLockRequirement>true</ensureLockRequirement>
     <tooltip>An exclusive discipline of radiant psychic energy, learned only by the one living Luminant. Its paths emphasize protection, revelation, and judgment.</tooltip>
   </VanillaPsycastsExpanded.PsycasterPathDef>
   <!-- First playable subset: three tier-I powers. Fifteen-node plan is in Docs/PSYCAST_TREE.md. -->

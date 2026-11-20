@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>VIGIL: The Forgotten Bond — v0.7 SOURCE ALPHA (Compile Required)</name>
+  <author>Community design project</author>
+  <packageId>VIGIL.ForgottenBond</packageId>
+  <supportedVersions><li>1.6</li></supportedVersions>
+  <description>UNCOMPILED DEVELOPMENT SOURCE. v0.7 milestone: Luminist cast-time restriction, five dev Generate quest entries and one-click test actions. Compile C# before enabling; refer to README. Quests and final visual transformations are incomplete.</description>
+  <modDependencies>
+    <li><packageId>brrainz.harmony</packageId><displayName>Harmony</displayName></li>
+    <li><packageId>Ludeon.RimWorld.Royalty</packageId><displayName>Royalty</displayName></li>
+    <li><packageId>Ludeon.RimWorld.Biotech</packageId><displayName>Biotech</displayName></li>
+    <li><packageId>OskarPotocki.VanillaFactionsExpanded.Core</packageId><displayName>Vanilla Expanded Framework</displayName></li>
+    <li><packageId>VanillaExpanded.VPsycastsE</packageId><displayName>Vanilla Psycasts Expanded</displayName></li>
+  </modDependencies>
+  <loadAfter><li>VanillaExpanded.VPsycastsE</li></loadAfter>
+</ModMetaData>

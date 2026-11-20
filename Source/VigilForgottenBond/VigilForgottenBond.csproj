@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>VigilForgottenBond</AssemblyName>
+    <RootNamespace>VigilForgottenBond</RootNamespace>
+    <OutputPath>../../Assemblies/</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+  <!-- Set these variables to the versions installed on your machine. Never distribute game DLLs. -->
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp"><HintPath>$(RIMWORLD_MANAGED)/Assembly-CSharp.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.CoreModule"><HintPath>$(RIMWORLD_MANAGED)/UnityEngine.CoreModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="0Harmony"><HintPath>$(HARMONY_DLL)</HintPath><Private>false</Private></Reference>
+    <Reference Include="VanillaPsycastsExpanded"><HintPath>$(VPE_DLL)</HintPath><Private>false</Private></Reference>
+    <Reference Include="VEF"><HintPath>$(VEF_DLL)</HintPath><Private>false</Private></Reference>
+  </ItemGroup>
+</Project>

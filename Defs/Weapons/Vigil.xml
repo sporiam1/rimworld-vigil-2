@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Defs>
+  <ThingDef ParentName="BaseMeleeWeapon_Sharp_Quality">
+    <defName>VGL_VigilSword</defName>
+    <label>VIGIL, the last verdict</label>
+    <description>An impossibly old blade with a platinum edge, graphite fuller, and a broken-halo guard surrounding an inert triangular persona core. At present it offers only a glimpse of its legendary capability. The true bond and awakened forms require the VIGIL runtime.</description>
+    <graphicData>
+      <texPath>Vigil/Weapons/Vigil_Dormant</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <drawSize>(1.65,1.65)</drawSize>
+    </graphicData>
+    <equippedAngleOffset>-65</equippedAngleOffset>
+    <techLevel>Ultra</techLevel>
+    <weaponTags><li>VGL_Relic</li></weaponTags>
+    <tradeability>None</tradeability>
+    <thingCategories><li>WeaponsMelee</li></thingCategories>
+    <statBases>
+      <WorkToMake>160000</WorkToMake>
+      <Mass>1.7</Mass>
+      <MarketValue>5000</MarketValue>
+      <MeleeWeapon_CooldownMultiplier>0.95</MeleeWeapon_CooldownMultiplier>
+    </statBases>
+    <comps>
+      <li Class="VigilForgottenBond.CompProperties_VigilPersona" />
+    </comps>
+    <tools>
+      <li>
+        <label>platinum edge</label>
+        <capacities><li>Cut</li></capacities>
+        <power>24</power>
+        <armorPenetration>0.8</armorPenetration>
+        <cooldownTime>2.2</cooldownTime>
+      </li>
+      <li>
+        <label>piercing point</label>
+        <capacities><li>Stab</li></capacities>
+        <power>20</power>
+        <armorPenetration>0.75</armorPenetration>
+        <cooldownTime>2.3</cooldownTime>
+      </li>
+      <li>
+        <label>pommel</label>
+        <capacities><li>Blunt</li></capacities>
+        <power>9</power>
+        <cooldownTime>2.1</cooldownTime>
+      </li>
+    </tools>
+  </ThingDef>
+</Defs>

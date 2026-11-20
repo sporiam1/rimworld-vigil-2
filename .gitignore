@@ -1,0 +1,18 @@
+# Build output (rebuild with Tools/Build-Windows.ps1)
+Assemblies/
+Source/**/bin/
+Source/**/obj/
+
+# IDEs
+.vs/
+.idea/
+*.user
+*.suo
+
+# OS
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Python
+__pycache__/

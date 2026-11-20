@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <TraitDef>
+    <defName>VGL_LuminantTrait</defName>
+    <!-- Not a random pawn generation trait. The world controller grants it to one girl only. -->
+    <commonality>0</commonality>
+    <degreeDatas>
+      <li>
+        <degree>0</degree>
+        <label>luminant</label>
+        <description>The sole living bearer of the Lumen, an enigmatic psychic radiance. Her gift is latent in infancy, awakens gradually as she grows, and resists corruption from the Void. This trait marks her identity but does not itself grant psychic abilities. Only the world-recognized Luminant can use the exclusive Luminist path.</description>
+      </li>
+    </degreeDatas>
+  </TraitDef>
+</Defs>

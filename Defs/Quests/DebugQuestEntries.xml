@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <QuestScriptDef>
+    <defName>VGL_Q_TheSilentVault_TEST</defName>
+    <isRootSpecial>true</isRootSpecial>
+    <rootSelectionWeight>0</rootSelectionWeight>
+    <rootMinPoints>0</rootMinPoints>
+    <defaultChallengeRating>1</defaultChallengeRating>
+    <root Class="VigilForgottenBond.QuestNode_VigilDebug"><scenario>Vault</scenario></root>
+  </QuestScriptDef>
+  <QuestScriptDef>
+    <defName>VGL_Q_ThreeWitnesses_TEST</defName>
+    <isRootSpecial>true</isRootSpecial>
+    <rootSelectionWeight>0</rootSelectionWeight>
+    <rootMinPoints>0</rootMinPoints>
+    <defaultChallengeRating>1</defaultChallengeRating>
+    <root Class="VigilForgottenBond.QuestNode_VigilDebug"><scenario>Witnesses</scenario></root>
+  </QuestScriptDef>
+  <QuestScriptDef>
+    <defName>VGL_Q_FirstLight_TEST</defName>
+    <isRootSpecial>true</isRootSpecial>
+    <rootSelectionWeight>0</rootSelectionWeight>
+    <rootMinPoints>0</rootMinPoints>
+    <defaultChallengeRating>1</defaultChallengeRating>
+    <root Class="VigilForgottenBond.QuestNode_VigilDebug"><scenario>FirstLight</scenario></root>
+  </QuestScriptDef>
+  <QuestScriptDef>
+    <defName>VGL_Q_ForgottenBond_TEST</defName>
+    <isRootSpecial>true</isRootSpecial>
+    <rootSelectionWeight>0</rootSelectionWeight>
+    <rootMinPoints>0</rootMinPoints>
+    <defaultChallengeRating>1</defaultChallengeRating>
+    <root Class="VigilForgottenBond.QuestNode_VigilDebug"><scenario>Bond</scenario></root>
+  </QuestScriptDef>
+  <QuestScriptDef>
+    <defName>VGL_Q_Continuance_TEST</defName>
+    <isRootSpecial>true</isRootSpecial>
+    <rootSelectionWeight>0</rootSelectionWeight>
+    <rootMinPoints>0</rootMinPoints>
+    <defaultChallengeRating>1</defaultChallengeRating>
+    <root Class="VigilForgottenBond.QuestNode_VigilDebug"><scenario>Succession</scenario></root>
+  </QuestScriptDef>
+</Defs>

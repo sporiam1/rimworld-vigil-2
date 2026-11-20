@@ -1,0 +1,83 @@
+name: Build mod
+
+# Every push to main compiles the mod and publishes a ready-to-play zip
+# as the "dev-build" pre-release. Pull requests just compile.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      # VEF and VPE aren't on NuGet. Their public repos ship the RimWorld 1.6 DLLs,
+      # so fetch just those folders (sparse, no textures).
+      - name: Fetch VEF and VPE 1.6 assemblies
+        run: |
+          set -e
+          fetch() {
+            git clone -q --depth 1 --filter=blob:none --sparse "https://github.com/$1" "deps/$2"
+            git -C "deps/$2" sparse-checkout set 1.6/Assemblies
+            echo "$2 @ $(git -C deps/$2 rev-parse --short HEAD)"
+          }
+          fetch Vanilla-Expanded/VanillaExpandedFramework VEF
+          fetch Vanilla-Expanded/VanillaPsycastsExpanded VPE
+          ls deps/VEF/1.6/Assemblies/VEF.dll deps/VPE/1.6/Assemblies/VanillaPsycastsExpanded.dll
+
+      - name: Static checks
+        run: |
+          pip install --quiet pillow
+          python Tools/VerifyFiles.py
+
+      - name: Compile
+        run: >
+          dotnet build Source/VigilForgottenBond/VigilForgottenBond.csproj -c Release
+          -p:VEF_DLL=$GITHUB_WORKSPACE/deps/VEF/1.6/Assemblies/VEF.dll
+          -p:VPE_DLL=$GITHUB_WORKSPACE/deps/VPE/1.6/Assemblies/VanillaPsycastsExpanded.dll
+          -warnaserror- -clp:NoSummary
+
+      - name: Package playable mod
+        run: |
+          set -e
+          test -f Assemblies/VigilForgottenBond.dll
+          mkdir -p dist/VIGIL_ForgottenBond
+          for d in About Defs Textures Assemblies Languages Patches; do
+            [ -d "$d" ] && cp -r "$d" dist/VIGIL_ForgottenBond/
+          done
+          # Only our DLL: never ship Harmony/RimWorld/VEF copies.
+          find dist/VIGIL_ForgottenBond/Assemblies -type f ! -name 'VigilForgottenBond.dll' -delete
+          cp README.md CHANGELOG.md dist/VIGIL_ForgottenBond/
+          (cd dist && zip -qr VIGIL_ForgottenBond.zip VIGIL_ForgottenBond)
+          ls -la dist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: VIGIL_ForgottenBond
+          path: dist/VIGIL_ForgottenBond.zip
+
+      - name: Publish dev-build release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete dev-build --cleanup-tag -y || true
+          gh release create dev-build dist/VIGIL_ForgottenBond.zip \
+            --prerelease --target "$GITHUB_SHA" \
+            --title "Dev build ($(git rev-parse --short HEAD))" \
+            --notes "Automatic build of the latest commit on main. **Alpha: compiled, but test on a throwaway save.**
+
+          Install: unzip into RimWorld/Mods so you get Mods/VIGIL_ForgottenBond/About/About.xml. Remove any older VIGIL copy first.
+          Load order: Harmony, Royalty, Biotech, Vanilla Expanded Framework, Vanilla Psycasts Expanded, VIGIL.
+
+          Latest change: $(git log -1 --format=%s)"

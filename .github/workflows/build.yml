@@ -45,7 +45,7 @@ jobs:
           dotnet build Source/VigilForgottenBond/VigilForgottenBond.csproj -c Release
           -p:VEF_DLL=$GITHUB_WORKSPACE/deps/VEF/1.6/Assemblies/VEF.dll
           -p:VPE_DLL=$GITHUB_WORKSPACE/deps/VPE/1.6/Assemblies/VanillaPsycastsExpanded.dll
-          -warnaserror- -clp:NoSummary
+          -v minimal
 
       - name: Package playable mod
         run: |

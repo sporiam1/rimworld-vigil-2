@@ -1,5 +1,33 @@
 # Changelog
 
+## v0.9.0 (2026-11-21): Milestone 2a, VIGIL comes alive
+
+### Added
+- **Sword abilities.** These are buttons on the bearer while he holds VIGIL:
+  - **Aegis** (Guardian, 30 Resonance, 1-day cooldown): he and allies within 5 tiles take 40% less damage for 30 seconds.
+  - **Sever** (Executioner, 25 Resonance, 1-hour cooldown): an armor-piercing cut against an adjacent enemy.
+  - **Verdict** (Arbiter, 40 Resonance, 12-hour cooldown): stuns an enemy in sight, then **Judges** it for 40 seconds. A Judged enemy is slowed, less accurate, and takes 15% more damage.
+  - **Final Mandate** (Ascendant only, 100 Resonance, 3-day cooldown): a shockwave that strikes and stuns enemies within 6 tiles and gives allies inside it Aegis.
+  - **Last Stand** (passive, Cooperative Accord or higher, once per 2 days): below 45% health, one big hit is cut by 70%, and VIGIL steadies him with less pain and better focus.
+- **Resonance in combat.** It builds when the bearer deals or takes damage, and from kills. A status panel shows Resonance and Accord next to the ability buttons.
+- **Accord tiers, with effects:**
+  - Fractured (below 25): VIGIL refuses Sever, Verdict and Final Mandate.
+  - Cooperative (50+): Last Stand turns on.
+  - Trusted (75+): abilities cost 20% less.
+  - True Accord (90+): Ascendant becomes possible.
+  - Accord rises with counsel (+2 a day), the oath (+10), shielding 2+ allies with Aegis (+1), and ending a threat (+1, once a day). It falls by 2 when an ally dies within 15 tiles of the bearer.
+  - Each tier change sends a letter with VIGIL's reaction, and **Consult VIGIL** has different lines for each tier.
+- **Awakening stages**, which never go backwards:
+  - **Bound**
+  - **Awakened**: Accord 50+ and 100 Resonance spent.
+  - **Ascendant**: Accord 90+, plus either the oath or 400 Resonance spent.
+  - The sword's sprite changes for Awakened and Ascendant. While he holds it, the bearer gets **VIGIL's bond**: +2/+4/+6 melee hit chance, and ×1.15/×1.3 melee damage from Awakened on.
+- Six ability icons.
+- Debug menu, VIGIL: Tests: Accord ±25, Fill Resonance, Reset ability cooldowns, Advance awakening stage.
+- CI warns about any stat name that isn't in RimWorld's `StatDefOf`.
+
+All numbers are first-pass balance and need playtesting.
+
 ## v0.8.1 (2026-11-21)
 
 **Playtested in RimWorld 1.6.4871 (2026-11-21): every test in `Docs/DEV_TESTS.md` passes.** First confirmed-working build.

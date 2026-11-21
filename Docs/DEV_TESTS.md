@@ -1,4 +1,4 @@
-# VIGIL alpha v0.8 — Development quest tests
+# VIGIL alpha v0.9 — Development tests
 
 This build adds **development launchers**, not the full Silent Vault or Anomaly story campaign.
 The test quests exist to speed up repeatable manual testing of core mechanics.
@@ -44,6 +44,33 @@ Under **Debug actions > VIGIL: Tests**, find the same launchers, plus:
    "Remembers"; `Petition VIGIL` is available again for another male colonist.
 9. Check the log on startup for `[VIGIL] Forgotten Bond alpha v0.8 loaded: N patches applied`.
    Any `Patch … failed` line names exactly which hook doesn't match your game version.
+
+## v0.9: sword abilities, Accord, awakening
+
+Setup: spawn VIGIL, bond a male colonist (Witnesses → Arbiter's Judgment) and equip it. Spawn some enemies with
+Debug actions → Spawn pawn (e.g. a raider or a scyther), or trigger a small raid.
+
+10. **Status panel and bond.** With the bearer selected, there's a VIGIL panel with Resonance and Accord bars
+    next to Aegis, Sever, Verdict and Consult. His Health tab shows "VIGIL's bond (bound)". Unequip the sword
+    and the bond disappears; re-equip and it returns.
+11. **Resonance.** Fight in melee. Resonance should rise when he hits or is hit, and jump by 10 on a kill.
+12. **Aegis.** Use it with 2+ colonists nearby. They get "aegis" for 30 s, take visibly less damage, and Accord
+    gains +1. The button then shows a 1-day cooldown.
+13. **Sever.** Target an adjacent enemy: a big cut. Try a non-adjacent target and you get a "must be adjacent" message.
+14. **Verdict.** Target an enemy within 8 tiles: stunned, then "judged" in its Health tab (slower, less accurate).
+15. **Accord tiers.** Use VIGIL: Tests → `Sword: Accord -25` until Fractured. You get a letter, and Sever and Verdict
+    are greyed out ("VIGIL refuses"); Aegis still works. Raise it back with `Accord +25`.
+    Consult at different tiers and the lines change.
+16. **Last Stand.** At Cooperative (50+), injure the bearer below ~45% health (dev: Damage) and hit him again.
+    "Last Stand" appears, the hit is much smaller, and he gets the "last stand" hediff. It won't fire again for 2 days.
+17. **Awakening.** `Sword: Fill Resonance` and use abilities (`Reset ability cooldowns` helps) until 100 is spent
+    with Accord ≥ 50: you get the "VIGIL Awakened" letter, the sword sprite gains cyan runes (on the ground and in
+    hand), and the bond becomes "awakened". Raise Accord to 90+ and swear the oath (or spend 400): Ascendant, with
+    a brighter sprite and the **Final Mandate** button. `Sword: Advance awakening stage` skips ahead.
+18. **Final Mandate.** Surrounded by enemies: all within 6 tiles are struck and stunned, and nearby allies get Aegis.
+19. **Ally death.** Kill a colonist (dev: Kill) standing near the bearer: Accord −2.
+20. **Save/reload** keeps Accord, Resonance, stage, cooldowns and the sprite.
+21. **Old save from v0.8.1**: load it and a bonded sword should show as Bound, with nothing broken.
 
 ## What is NOT implemented
 

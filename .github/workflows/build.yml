@@ -47,6 +47,9 @@ jobs:
           -p:VPE_DLL=$GITHUB_WORKSPACE/deps/VPE/1.6/Assemblies/VanillaPsycastsExpanded.dll
           -v minimal
 
+      - name: Check stat names against RimWorld 1.6
+        run: python Tools/CheckStatNames.py "$(find ~/.nuget/packages/krafs.rimworld.ref -name Assembly-CSharp.dll | head -1)"
+
       - name: Package playable mod
         run: |
           set -e

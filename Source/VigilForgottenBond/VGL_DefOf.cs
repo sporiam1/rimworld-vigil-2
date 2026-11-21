@@ -12,6 +12,10 @@ namespace VigilForgottenBond
         public static TraitDef VGL_LuminantTrait;
         public static HediffDef VGL_LuminantMantle;
         public static HediffDef VGL_LuminousWard;
+        public static HediffDef VGL_Aegis;
+        public static HediffDef VGL_Judged;
+        public static HediffDef VGL_LastStand;
+        public static HediffDef VGL_VigilBond;
         public static PsycasterPathDef VGL_Luminist;
         public static VEF.Abilities.AbilityDef VGL_LuminousWardCast;
 

@@ -23,6 +23,38 @@ namespace VigilForgottenBond
         [DebugAction("VIGIL: Tests", "Finish succession wait", allowedGameStates = AllowedGameStates.PlayingOnMap)]
         private static void Succession() => VigilDevScenarios.RunAndNotify("Succession");
 
+        // --- Milestone 2a: VIGIL's abilities, Accord and awakening ---------------------
+
+        [DebugAction("VIGIL: Tests", "Sword: Accord +25", allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        private static void AccordUp() => WithBoundSword(c => c.DevAdjustAccord(25));
+
+        [DebugAction("VIGIL: Tests", "Sword: Accord -25", allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        private static void AccordDown() => WithBoundSword(c => c.DevAdjustAccord(-25));
+
+        [DebugAction("VIGIL: Tests", "Sword: Fill Resonance", allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        private static void FillResonance() => WithBoundSword(c => c.DevFillResonance());
+
+        [DebugAction("VIGIL: Tests", "Sword: Reset ability cooldowns", allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        private static void ResetCooldowns() => WithBoundSword(c => c.DevResetCooldowns());
+
+        [DebugAction("VIGIL: Tests", "Sword: Advance awakening stage", allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        private static void AdvanceStage() => WithBoundSword(c => c.DevAdvanceStage());
+
+        private static void WithBoundSword(System.Action<CompVigilPersona> act)
+        {
+            CompVigilPersona comp = CompVigilPersona.FindAny();
+            if (comp?.Bearer == null)
+            {
+                Messages.Message("DEV: VIGIL has no bearer yet. Spawn it and complete the Three Witnesses first.",
+                    MessageTypeDefOf.RejectInput, false);
+                return;
+            }
+            act(comp);
+            Messages.Message("DEV: VIGIL now " + CompVigilPersona.StageLabel(comp.Stage) + ", Accord " + comp.Accord +
+                " (" + CompVigilPersona.TierLabel(comp.Tier) + "), Resonance " + (int)comp.Resonance + ".",
+                MessageTypeDefOf.NeutralEvent, false);
+        }
+
         [DebugAction("VIGIL: Tests", "Assign Luminant to existing female pawn", actionType = DebugActionType.ToolMapForPawns, allowedGameStates = AllowedGameStates.PlayingOnMap)]
         private static void AssignExisting(Pawn pawn)
         {

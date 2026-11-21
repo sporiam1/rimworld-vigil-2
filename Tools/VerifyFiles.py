@@ -32,7 +32,7 @@ for p in (root/'Textures').rglob('*.png'):
         im.verify()
 cs='\n'.join(p.read_text(encoding='utf-8') for p in (root/'Source').rglob('*.cs'))
 for token in ('TrySpawnHatchedOrBornPawn','vigilTrialCandidate','guardianWitness','executionerWitness',
-              'LumenWorldComponent','IsLuminant','Scribe_References.Look','VGL_LuminousWardCast','Patch_LuministPathLock','ReleaseLostBearer'):
+              'LumenWorldComponent','IsLuminant','Scribe_References.Look','VGL_LuminousWardCast','Patch_LuministPathLock','ReleaseLostBearer','VigilWeapon','Gizmo_VigilStatus'):
     assert token in cs, f'Missing source invariant: {token}'
 import re
 # Every VigilForgottenBond.* class named in XML must exist in the C# source.
@@ -40,6 +40,9 @@ classes=set(re.findall(r'\b(?:class|struct)\s+(\w+)', cs))
 for p in xml:
     for m in re.findall(r'VigilForgottenBond\.(\w+)', p.read_text(encoding='utf-8')):
         assert m in classes, f'{p.name} references VigilForgottenBond.{m}, which is not defined in Source/'
+# Texture paths referenced from C# (ContentFinder and graphic path constants) must exist.
+for rel in set(re.findall(r'"((?:Vigil|UI)/[\w/]+)"', cs)):
+    assert (root/'Textures'/f'{rel}.png').exists(), f'C# references missing texture Textures/{rel}.png'
 # Every field in VGL_DefOf must match a defName (DefOf fields resolve by name at startup).
 defof=(root/'Source'/'VigilForgottenBond'/'VGL_DefOf.cs').read_text(encoding='utf-8')
 for name in re.findall(r'public static [\w.]+ (VGL_\w+);', defof):

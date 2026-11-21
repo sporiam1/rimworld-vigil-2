@@ -3,7 +3,9 @@
   <ThingDef ParentName="BaseMeleeWeapon_Sharp_Quality">
     <defName>VGL_VigilSword</defName>
     <label>VIGIL, the last verdict</label>
-    <description>An impossibly old blade with a platinum edge, graphite fuller, and a broken-halo guard surrounding an inert triangular persona core. At present it offers only a glimpse of its legendary capability. The true bond and awakened forms require the VIGIL runtime.</description>
+    <!-- Swaps the sprite per awakening stage (Dormant/Bound, Awakened, Ascendant). -->
+    <thingClass>VigilForgottenBond.VigilWeapon</thingClass>
+    <description>An impossibly old blade with a platinum edge, graphite fuller, and a broken-halo guard surrounding an inert triangular persona core. At present it offers only a glimpse of its legendary capability. Only one bearer may carry it, and its light grows with his deeds.</description>
     <graphicData>
       <texPath>Vigil/Weapons/Vigil_Dormant</texPath>
       <graphicClass>Graphic_Single</graphicClass>

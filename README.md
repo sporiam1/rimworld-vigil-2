@@ -2,7 +2,7 @@
 
 A RimWorld 1.6 mod about a sentient archotech sword that judges who may carry it, and the one girl in the world born with the Lumen.
 
-> **Status: alpha v0.8.1. Core systems are playtested and working on RimWorld 1.6.** Story content is still to come.
+> **Status: alpha v0.9.0.** v0.8.1's core systems are playtested; v0.9's sword abilities are new and waiting for playtest.
 
 ## Play it
 
@@ -13,13 +13,13 @@ A RimWorld 1.6 mod about a sentient archotech sword that judges who may carry it
 
 ## What's in it
 
-- **VIGIL**, a unique sword: only one male colonist can carry it, chosen through the **Three Witnesses** trial (Guardian, Executioner, Arbiter). It has its own **Accord** (trust) and **Resonance** (combat) meters. When its bearer dies, it goes dormant, remembers him, and can be petitioned again.
+- **VIGIL**, a unique sword: only one male colonist can carry it, chosen through the **Three Witnesses** trial (Guardian, Executioner, Arbiter). Its bearer uses four abilities (**Aegis, Sever, Verdict, Final Mandate**) and has a **Last Stand** passive. These run on **Resonance**, built in combat, and **Accord**, VIGIL's trust in him. The sword awakens from Bound to Awakened to Ascendant, and its sprite changes as it does. When its bearer dies, it goes dormant, remembers him, and can be petitioned again.
 - **The Luminant**: only one living at a time in the whole world. A newborn girl inherits the mantle, it passes on one in-game year after her death, and she shows a visible trait and health condition.
 - **The Luminist path**: an exclusive Vanilla Psycasts Expanded tree that only the living Luminant can unlock or cast. Three tier-I powers are defined so far; 15 are planned (see `Docs/PSYCAST_TREE.md`).
 - **The Forgotten Bond**: the knight's guardianship oath.
 - **Dev tools**: five `[TEST]` quests and a *VIGIL: Tests* debug menu (see `Docs/DEV_TESTS.md`).
 
-Not built yet: the Silent Vault site, the story questline, sword visual states, the remaining 12 psycasts.
+Not built yet: the remaining 12 Luminist psycasts and Dawnbringer (Milestone 2b), the Silent Vault site, the Censor, and the story questline (Milestone 3).
 
 ## Requirements
 

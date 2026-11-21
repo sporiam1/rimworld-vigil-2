@@ -40,15 +40,53 @@ namespace VigilForgottenBond
                 foreach (Thing sword in victim.Map.listerThings.ThingsOfDef(VGL_DefOf.VGL_VigilSword))
                     sword.TryGetComp<CompVigilPersona>()?.RecordWitness(victim, attacker, dinfo.Amount);
 
+            // VIGIL in combat: the bearer's own Last Stand and Resonance, and Resonance
+            // from blows he lands with the sword.
             var equipped = victim.equipment?.Primary?.GetComp<CompVigilPersona>();
-            if (equipped != null && equipped.CanWield(victim)) equipped.GainResonance(dinfo.Amount * 0.5f);
+            if (equipped != null && equipped.IsWieldedBy(victim))
+            {
+                equipped.TryLastStand(victim, ref dinfo);
+                equipped.Notify_BearerTookDamage(dinfo.Amount);
+            }
+            var wielded = attacker?.equipment?.Primary?.GetComp<CompVigilPersona>();
+            if (wielded != null && attacker != victim && wielded.IsWieldedBy(attacker))
+                wielded.Notify_BearerDealtDamage(victim, dinfo.Amount);
 
-            if (victim.health?.hediffSet?.HasHediff(VGL_DefOf.VGL_LuminousWard) == true)
-                dinfo.SetAmount(dinfo.Amount * 0.82f);
+            HediffSet hediffs = victim.health?.hediffSet;
+            if (hediffs != null)
+            {
+                if (hediffs.HasHediff(VGL_DefOf.VGL_Aegis)) dinfo.SetAmount(dinfo.Amount * 0.6f);
+                if (hediffs.HasHediff(VGL_DefOf.VGL_LuminousWard)) dinfo.SetAmount(dinfo.Amount * 0.82f);
+                if (hediffs.HasHediff(VGL_DefOf.VGL_Judged)) dinfo.SetAmount(dinfo.Amount * 1.15f);
+            }
 
             if (dinfo.Amount < 8f || LumenWorldComponent.Instance?.TryChildShield(victim) != true) return;
             dinfo.SetAmount(dinfo.Amount * 0.6f);
             if (victim.Spawned) MoteMaker.ThrowText(victim.DrawPos, victim.Map, "Lumen ward", 2f);
+        }
+    }
+
+    // Accord reacts to deaths: the bearer ending a threat, or an ally dying within his reach.
+    [HarmonyPatch(typeof(Pawn), nameof(Pawn.Kill))]
+    internal static class Patch_PawnKilled
+    {
+        public static void Postfix(Pawn __instance, DamageInfo? dinfo)
+        {
+            if (__instance == null || !__instance.Dead) return;
+            if (dinfo?.Instigator is Pawn killer && killer != __instance)
+            {
+                var comp = killer.equipment?.Primary?.GetComp<CompVigilPersona>();
+                if (comp != null && comp.IsWieldedBy(killer) && __instance.HostileTo(killer))
+                    comp.Notify_BearerKilled(__instance);
+            }
+            if (__instance.Faction == Faction.OfPlayer && __instance.RaceProps.Humanlike && __instance.MapHeld != null)
+            {
+                foreach (Pawn p in __instance.MapHeld.mapPawns.FreeColonistsSpawned)
+                {
+                    var comp = p.equipment?.Primary?.GetComp<CompVigilPersona>();
+                    if (comp != null && comp.IsWieldedBy(p)) comp.Notify_AllyDied(__instance);
+                }
+            }
         }
     }
 

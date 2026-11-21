@@ -2,7 +2,7 @@
 
 A RimWorld 1.6 mod about a sentient archotech sword that judges who may carry it, and the one girl in the world born with the Lumen.
 
-> **Status: alpha v0.8. It compiles but hasn't been playtested yet.** Use a throwaway save.
+> **Status: alpha v0.8.1. Core systems are playtested and working on RimWorld 1.6.** Story content is still to come.
 
 ## Play it
 

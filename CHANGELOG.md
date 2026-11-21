@@ -2,6 +2,8 @@
 
 ## v0.8.1 (2026-11-21)
 
+**Playtested in RimWorld 1.6.4871 (2026-11-21): every test in `Docs/DEV_TESTS.md` passes.** First confirmed-working build.
+
 ### Fixed
 - **Possible load crash with VPE.** The Luminist path was a `Class=` subclass of VPE's path def. If RimWorld files a subclassed def separately, VIGIL's psycasts can't attach to the path. VPE then calls `Max()` on an empty ability list ("Sequence contains no elements"), and that exception stops loading (`KeyBindingDef` null). The path is now a plain VPE path, and a Harmony postfix on `PsycasterPathDef.CanPawnUnlock` locks it to the Luminant. The lock behaves the same.
 - About.xml lists Steam Workshop links for Harmony, VEF and VPE, which clears three load warnings.

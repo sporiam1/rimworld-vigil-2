@@ -16,7 +16,9 @@ for p in (root / 'Defs').rglob('*.xml'):
     for tag in ('statOffsets', 'statFactors', 'equippedStatOffsets', 'statBases'):
         for node in ET.parse(p).getroot().iter(tag):
             names.update(child.tag for child in node)
-missing = sorted(n for n in names if b'\0' + n.encode() + b'\0' not in dll)
+# The metadata string heap shares suffixes between names, so match 'name\0' without
+# requiring a leading NUL.
+missing = sorted(n for n in names if n.encode() + b'\0' not in dll)
 for n in missing:
     print(f'::warning title=Unverified stat::{n} is not in StatDefOf; confirm it exists in RimWorld 1.6 Core defs.')
 print(f'Checked {len(names)} stat names: {sorted(names)}; unverified: {missing or "none"}')

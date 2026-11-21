@@ -32,7 +32,7 @@ for p in (root/'Textures').rglob('*.png'):
         im.verify()
 cs='\n'.join(p.read_text(encoding='utf-8') for p in (root/'Source').rglob('*.cs'))
 for token in ('TrySpawnHatchedOrBornPawn','vigilTrialCandidate','guardianWitness','executionerWitness',
-              'LumenWorldComponent','IsLuminant','Scribe_References.Look','VGL_LuminousWardCast','LuministPathDef','ReleaseLostBearer'):
+              'LumenWorldComponent','IsLuminant','Scribe_References.Look','VGL_LuminousWardCast','Patch_LuministPathLock','ReleaseLostBearer'):
     assert token in cs, f'Missing source invariant: {token}'
 import re
 # Every VigilForgottenBond.* class named in XML must exist in the C# source.

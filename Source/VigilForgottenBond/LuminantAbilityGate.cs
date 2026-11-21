@@ -6,7 +6,7 @@ using VEF.Abilities;
 namespace VigilForgottenBond
 {
     /// <summary>
-    /// Fail-closed caster restriction. LuministPathDef makes VPE enforce this at
+    /// Fail-closed caster restriction. Patch_LuministPathLock makes VPE enforce this at
     /// unlock and cast time; the ability classes below check again independently,
     /// so a Luminist power granted by any other route still refuses to fire.
     /// </summary>
@@ -32,6 +32,17 @@ namespace VigilForgottenBond
                 MessageTypeDefOf.RejectInput, false);
             return true;
         }
+    }
+
+    public static class LuministAbilities
+    {
+        public const string PathDefName = "VGL_Luminist";
+
+        public static bool IsLuministPath(VanillaPsycastsExpanded.PsycasterPathDef path) =>
+            path?.defName == PathDefName;
+
+        public static bool IsLuministAbility(VEF.Abilities.AbilityDef def) =>
+            IsLuministPath(def?.GetModExtension<VanillaPsycastsExpanded.AbilityExtension_Psycast>()?.path);
     }
 
     public class Ability_LuministSupport : Ability_Blank

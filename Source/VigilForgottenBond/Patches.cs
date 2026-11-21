@@ -5,6 +5,7 @@ using HarmonyLib;
 using RimWorld;
 using Verse;
 using VEF.Abilities;
+using VanillaPsycastsExpanded;
 
 namespace VigilForgottenBond
 {
@@ -98,16 +99,34 @@ namespace VigilForgottenBond
         }
     }
 
+    /// <summary>
+    /// Locks the Luminist path to the living Luminant. VPE calls CanPawnUnlock for the
+    /// Psycasts-tab Unlock button, at cast time (the path sets
+    /// ignoreLockRestrictionsForNeurotrainers=false) and in RecheckPaths (it sets
+    /// ensureLockRequirement=true, so a pawn who loses the mantle loses the path).
+    /// v0.8 used a Class= subclass for this; a plain Harmony postfix avoids any risk
+    /// of the def landing outside DefDatabase&lt;PsycasterPathDef&gt;.
+    /// </summary>
+    [HarmonyPatch(typeof(PsycasterPathDef), nameof(PsycasterPathDef.CanPawnUnlock))]
+    internal static class Patch_LuministPathLock
+    {
+        public static void Postfix(PsycasterPathDef __instance, Pawn pawn, ref bool __result)
+        {
+            if (__result && LuministAbilities.IsLuministPath(__instance))
+                __result = LuminantAbilityGate.CanCast(pawn);
+        }
+    }
+
     // Belt-and-braces: refuse to hand ANY Luminist ability (all 15 + Dawnbringer, not
     // just the three tier-I powers) to a pawn who is not the living Luminant, whether
     // the grant comes from VPE, a neurotrainer, another mod, or a debug tool.
-    // Path unlocking and cast-time checks are handled by LuministPathDef.
+    // Path unlocking and cast-time checks are handled by Patch_LuministPathLock.
     [HarmonyPatch(typeof(CompAbilities), nameof(CompAbilities.GiveAbility))]
     internal static class Patch_LuministAbilityGrant
     {
         public static bool Prefix(CompAbilities __instance, VEF.Abilities.AbilityDef abilityDef)
         {
-            if (!LuministPathDef.IsLuministAbility(abilityDef)) return true;
+            if (!LuministAbilities.IsLuministAbility(abilityDef)) return true;
             if (LuminantAbilityGate.CanCast(__instance.parent as Pawn)) return true;
             if (Prefs.DevMode)
                 Log.Message("[VIGIL] Blocked Luminist ability " + abilityDef.defName + " for " +

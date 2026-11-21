@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
   <!-- Schema checked against VPE source (PsycasterPathDef / AbilityExtension_Psycast).
-       Class= makes VPE use LuministPathDef, whose CanPawnUnlock admits only the living Luminant. -->
-  <VanillaPsycastsExpanded.PsycasterPathDef Class="VigilForgottenBond.LuministPathDef">
+       A plain PsycasterPathDef (no Class= subclass, which risked an empty path and a load crash).
+       Patch_LuministPathLock restricts CanPawnUnlock to the living Luminant. -->
+  <VanillaPsycastsExpanded.PsycasterPathDef>
     <defName>VGL_Luminist</defName>
     <label>luminist</label>
     <description>A singular discipline of stabilizing psychic light. Sanctuary, Revelation, and Judgment converge at the final dawn. Only the current Luminant may learn these psycasts.</description>

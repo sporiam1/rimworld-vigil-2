@@ -1,0 +1,40 @@
+name: Playtest report
+description: Something broke, looked wrong, or felt off while playing.
+title: "[Playtest] "
+labels: ["playtest"]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: From the mod list or the startup log line "[VIGIL] Forgotten Bond alpha …".
+      placeholder: v0.9.0
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of problem?
+      options:
+        - Bug (red error, crash, something didn't work)
+        - Balance (too strong, too weak, too slow)
+        - Looks wrong (art, text, UI)
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: A sentence is fine. Include the test number from Docs/DEV_TESTS.md if there is one.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+  - type: textarea
+    id: log
+    attributes:
+      label: Log or screenshot
+      description: Paste red log lines, or attach Player.log or a screenshot (drag it in).

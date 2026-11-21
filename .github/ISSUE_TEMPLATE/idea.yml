@@ -1,0 +1,15 @@
+name: Idea or design note
+description: A feature idea, a lore change, or an answer to an open design decision.
+labels: ["design-needed"]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: The idea
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why
+      description: What it adds to the story or the play.

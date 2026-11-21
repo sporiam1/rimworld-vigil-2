@@ -21,6 +21,11 @@ A RimWorld 1.6 mod about a sentient archotech sword that judges who may carry it
 
 Not built yet: the remaining 12 Luminist psycasts and Dawnbringer (Milestone 2b), the Silent Vault site, the Censor, and the story questline (Milestone 3).
 
+## Project management
+
+- **[Design bible](https://claude.ai/artifact/PnszFDQhu8edJKESHMM6bk):** the current lore, mechanics, numbers and open decisions.
+- **[Issues](https://github.com/sporiam1/rimworld-vigil-2/issues)** by **[milestone](https://github.com/sporiam1/rimworld-vigil-2/milestones)** (2a playtest, 2b Luminist tree, 3 Story, Release). Report problems with the *Playtest report* template.
+
 ## Requirements
 
 RimWorld 1.6 · Royalty · Biotech · Harmony · Vanilla Expanded Framework · Vanilla Psycasts Expanded

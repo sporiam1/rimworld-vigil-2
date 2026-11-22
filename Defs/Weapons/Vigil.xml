@@ -15,7 +15,9 @@
     <techLevel>Ultra</techLevel>
     <weaponTags><li>VGL_Relic</li></weaponTags>
     <tradeability>None</tradeability>
-    <thingCategories><li>WeaponsMelee</li></thingCategories>
+    <!-- The parent template already files it under WeaponsMelee; it must never be crafted or smelted. -->
+    <recipeMaker IsNull="True" />
+    <smeltable>false</smeltable>
     <statBases>
       <WorkToMake>160000</WorkToMake>
       <Mass>1.7</Mass>

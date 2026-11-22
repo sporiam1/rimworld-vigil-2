@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.9.1 (2026-11-21)
+
+### Fixed
+- Three config errors on the sword (#21), present since the original prototype:
+  - It listed the WeaponsMelee category twice.
+  - It inherited a crafting recipe, so it could have been craftable at a smithy.
+  - It was smeltable but gave nothing back.
+  It's now never craftable or smeltable.
+
 ## v0.9.0 (2026-11-21): Milestone 2a, VIGIL comes alive
 
 ### Added

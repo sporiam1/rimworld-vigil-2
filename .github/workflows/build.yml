@@ -91,3 +91,5 @@ jobs:
           Load order: Harmony, Royalty, Biotech, Vanilla Expanded Framework, Vanilla Psycasts Expanded, VIGIL.
 
           Latest change: $(git log -1 --format=%s)"
+          # gh can leave a release as a draft when it has to create the tag itself; make it public.
+          gh release edit dev-build --draft=false

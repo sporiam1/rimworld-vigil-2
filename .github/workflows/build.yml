@@ -11,6 +11,11 @@ on:
 permissions:
   contents: write
 
+# One build at a time on main, so two pushes can't race over the dev-build release.
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -75,6 +80,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release delete dev-build --cleanup-tag -y || true
+          # A tag can outlive its release (e.g. an interrupted run): remove it too.
+          git push origin :refs/tags/dev-build || true
           gh release create dev-build dist/VIGIL_ForgottenBond.zip \
             --prerelease --target "$GITHUB_SHA" \
             --title "Dev build ($(git rev-parse --short HEAD))" \

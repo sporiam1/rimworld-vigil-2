@@ -221,6 +221,7 @@ namespace VigilForgottenBond
             lifetimeResonanceSpent = 0f;
             ResetCooldowns();
             if (parent.Spawned) parent.DirtyMapMesh(parent.Map);
+            UpdateBondHediff(bearer, IsWieldedBy(bearer));
             Find.LetterStack.ReceiveLetter("VIGIL: The First Judgment",
                 bearer.LabelShortCap + " has passed all three witnesses. The persona core awakens. " +
                 "'You may carry me, Bearer. Let your actions give your oath meaning.'\n\n" +

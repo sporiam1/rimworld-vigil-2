@@ -52,7 +52,7 @@ Debug actions → Spawn pawn (e.g. a raider or a scyther), or trigger a small ra
 
 10. **Status panel and bond.** With the bearer selected, there's a VIGIL panel with Resonance and Accord bars
     next to Aegis, Sever, Verdict and Consult. His Health tab shows "VIGIL's bond (bound)". Unequip the sword
-    and the bond disappears; re-equip and it returns.
+    and it changes to "VIGIL's bond (apart)" with no bonuses; re-equip and the stage returns.
 11. **Resonance.** Fight in melee. Resonance should rise when he hits or is hit, and jump by 10 on a kill.
 12. **Aegis.** Use it with 2+ colonists nearby. They get "aegis" for 30 s, take visibly less damage, and Accord
     gains +1. The button then shows a 1-day cooldown.

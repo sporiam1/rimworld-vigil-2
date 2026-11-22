@@ -66,7 +66,7 @@ namespace VigilForgottenBond
         {
             awakening = Mathf.Clamp(stage, 1, 3);
             if (parent.Spawned) parent.DirtyMapMesh(parent.Map);
-            if (IsWieldedBy(bearer)) UpdateBondHediff(bearer);
+            if (bearer != null) UpdateBondHediff(bearer, IsWieldedBy(bearer));
 
             string text = awakening == 2
                 ? "Light runs through the fuller of the blade. VIGIL has Awakened.\n\n" +
@@ -79,26 +79,36 @@ namespace VigilForgottenBond
                 LetterDefOf.PositiveEvent, parent.SpawnedOrAnyParentSpawned ? new LookTargets(parent) : new LookTargets(bearer));
         }
 
-        // Bond hediff: present only while the bearer holds VIGIL; severity = stage.
+        // Bond hediff: shown for as long as he is the bearer (#22). In hand, severity =
+        // stage (1–3) and the stage's combat bonuses apply; apart from the sword it drops
+        // to the "apart" stage (0.5), which carries no bonuses.
+        public const float BondApartSeverity = 0.5f;
+
         public override void Notify_Equipped(Pawn pawn)
         {
             base.Notify_Equipped(pawn);
-            if (CanWield(pawn)) UpdateBondHediff(pawn);
+            if (CanWield(pawn)) UpdateBondHediff(pawn, true);
         }
 
         public override void Notify_Unequipped(Pawn pawn)
         {
             base.Notify_Unequipped(pawn);
-            Hediff h = pawn?.health?.hediffSet?.GetFirstHediffOfDef(VGL_DefOf.VGL_VigilBond);
-            if (h != null) pawn.health.RemoveHediff(h);
+            if (CanWield(pawn)) UpdateBondHediff(pawn, false);
+            else RemoveBondHediff(pawn);
         }
 
-        private void UpdateBondHediff(Pawn pawn)
+        private void UpdateBondHediff(Pawn pawn, bool inHand)
         {
-            if (pawn?.health == null) return;
+            if (pawn?.health == null || pawn.Dead) return;
             Hediff h = pawn.health.hediffSet.GetFirstHediffOfDef(VGL_DefOf.VGL_VigilBond)
                        ?? pawn.health.AddHediff(VGL_DefOf.VGL_VigilBond);
-            h.Severity = Mathf.Clamp(awakening, 1, 3);
+            h.Severity = inHand ? Mathf.Clamp(awakening, 1, 3) : BondApartSeverity;
+        }
+
+        private static void RemoveBondHediff(Pawn pawn)
+        {
+            Hediff h = pawn?.health?.hediffSet?.GetFirstHediffOfDef(VGL_DefOf.VGL_VigilBond);
+            if (h != null) pawn.health.RemoveHediff(h);
         }
 
         public void DevAdvanceStage()
@@ -109,11 +119,14 @@ namespace VigilForgottenBond
     }
 
     /// <summary>VIGIL's thing class: picks the sprite for the current awakening stage.</summary>
+    [StaticConstructorOnStartup]
     public class VigilWeapon : ThingWithComps
     {
         private const string AwakenedPath = "Vigil/Weapons/Vigil_Awakened";
         private const string AscendantPath = "Vigil/Weapons/Vigil_Ascendant";
-        private static Graphic awakenedGraphic, ascendantGraphic;
+        // Built once on the main thread at startup, as RimWorld requires for graphics.
+        private static readonly Graphic awakenedGraphic = StageGraphic(AwakenedPath);
+        private static readonly Graphic ascendantGraphic = StageGraphic(AscendantPath);
         private CompVigilPersona persona;
 
         private CompVigilPersona Persona => persona ?? (persona = GetComp<CompVigilPersona>());
@@ -123,17 +136,16 @@ namespace VigilForgottenBond
             get
             {
                 VigilStage stage = Persona?.Stage ?? VigilStage.Dormant;
-                if (stage == VigilStage.Ascendant)
-                    return ascendantGraphic ?? (ascendantGraphic = StageGraphic(AscendantPath));
-                if (stage == VigilStage.Awakened)
-                    return awakenedGraphic ?? (awakenedGraphic = StageGraphic(AwakenedPath));
+                if (stage == VigilStage.Ascendant && ascendantGraphic != null) return ascendantGraphic;
+                if (stage == VigilStage.Awakened && awakenedGraphic != null) return awakenedGraphic;
                 return base.Graphic;
             }
         }
 
-        private Graphic StageGraphic(string path)
+        private static Graphic StageGraphic(string path)
         {
-            GraphicData gd = def.graphicData;
+            GraphicData gd = VGL_DefOf.VGL_VigilSword?.graphicData;
+            if (gd == null) return null;
             Shader shader = gd.shaderType?.Shader ?? ShaderDatabase.Cutout;
             return GraphicDatabase.Get<Graphic_Single>(path, shader, gd.drawSize, Color.white);
         }

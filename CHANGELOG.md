@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.9.2 (2026-11-21)
+
+### Changed
+- **VIGIL's bond stays in the Health tab for as long as he's the bearer** (#22). It now appears the moment he's bound. In hand, it shows the stage (bound, awakened, ascendant) and its bonuses. With the sword put away, it shows as "VIGIL's bond (apart)" with no bonuses.
+
+### Fixed
+- Startup warning "VigilWeapon probably needs a StaticConstructorOnStartup attribute": the stage sprites are now built on the main thread at startup.
+
 ## v0.9.1 (2026-11-21)
 
 ### Fixed

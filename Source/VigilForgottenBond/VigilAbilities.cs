@@ -95,6 +95,8 @@ namespace VigilForgottenBond
         public IEnumerable<Gizmo> BearerGizmos(Pawn pawn)
         {
             if (!IsWieldedBy(pawn)) yield break;
+            // Self-heal: e.g. a bearer resurrected still holding VIGIL never "re-equips" it.
+            if (!pawn.health.hediffSet.HasHediff(VGL_DefOf.VGL_VigilBond)) UpdateBondHediff(pawn, true);
 
             yield return new Gizmo_VigilStatus(this);
 

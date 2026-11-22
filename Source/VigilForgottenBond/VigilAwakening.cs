@@ -105,7 +105,7 @@ namespace VigilForgottenBond
             h.Severity = inHand ? Mathf.Clamp(awakening, 1, 3) : BondApartSeverity;
         }
 
-        private static void RemoveBondHediff(Pawn pawn)
+        public static void RemoveBondHediff(Pawn pawn)
         {
             Hediff h = pawn?.health?.hediffSet?.GetFirstHediffOfDef(VGL_DefOf.VGL_VigilBond);
             if (h != null) pawn.health.RemoveHediff(h);

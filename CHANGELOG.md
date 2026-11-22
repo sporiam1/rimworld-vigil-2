@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.9.3 (2026-11-21)
+
+### Fixed
+- **A dead bearer kept "VIGIL's bond (apart)" on his corpse** (#24). The bond is now removed the moment he dies. A bearer resurrected while still holding VIGIL gets the bond back automatically.
+
 ## v0.9.2 (2026-11-21)
 
 ### Changed

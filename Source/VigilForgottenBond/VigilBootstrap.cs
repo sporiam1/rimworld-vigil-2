@@ -26,7 +26,7 @@ namespace VigilForgottenBond
                     Log.Error("[VIGIL] Patch " + type.Name + " failed: " + e);
                 }
             }
-            string msg = "[VIGIL] Forgotten Bond alpha v0.9.2 loaded: " + ok + " patches applied";
+            string msg = "[VIGIL] Forgotten Bond alpha v0.9.3 loaded: " + ok + " patches applied";
             if (failed > 0) Log.Error(msg + ", " + failed + " FAILED (see errors above).");
             else Log.Message(msg + ".");
         }

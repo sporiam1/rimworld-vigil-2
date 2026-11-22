@@ -59,6 +59,7 @@ namespace VigilForgottenBond
         {
             if (bearer == null || !bearer.Dead) return;
             Pawn fallen = bearer;
+            RemoveBondHediff(fallen);
             string name = fallen.Name?.ToStringFull ?? fallen.LabelShort;
             if (!rememberedBearers.Contains(name)) rememberedBearers.Add(name);
             bearer = null;

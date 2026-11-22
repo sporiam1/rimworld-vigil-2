@@ -73,6 +73,8 @@ namespace VigilForgottenBond
         public static void Postfix(Pawn __instance, DamageInfo? dinfo)
         {
             if (__instance == null || !__instance.Dead) return;
+            // The bond dies with him (#24): a corpse never "unequips", so clear it here.
+            CompVigilPersona.RemoveBondHediff(__instance);
             if (dinfo?.Instigator is Pawn killer && killer != __instance)
             {
                 var comp = killer.equipment?.Primary?.GetComp<CompVigilPersona>();
